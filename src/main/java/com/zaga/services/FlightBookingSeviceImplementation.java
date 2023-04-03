@@ -2,6 +2,7 @@ package com.zaga.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -39,7 +40,7 @@ public class FlightBookingSeviceImplementation implements FlightBookingService{
     @Transactional
     public void bookFlight(FlightBooking flightBooking, Passenger passenger, Payment payment ,FlightDetails flightDetails) {
 
-        // Save the customer and payment entities
+        // Save the passenger , flightdetails and  payment entities
         passengerRepository.persist(passenger);
         
         paymentREPository.persist(payment);
@@ -52,7 +53,7 @@ public class FlightBookingSeviceImplementation implements FlightBookingService{
         List<FlightDetails> flDetails = new ArrayList<FlightDetails>();
         flDetails.add(flightDetails);
 
-        // Associate the customer and payment entities with the flight booking entity
+        // Associate the passenger and payment entities with the flight booking entity
         flightBooking.setPassenger(passengers);
         flightBooking.setPayment(payment);
         flightBooking.setFlightDetails(flDetails);
@@ -64,47 +65,46 @@ public class FlightBookingSeviceImplementation implements FlightBookingService{
     @Override
     @Transactional
     public void bookFlight(FlightBooking flightBooking,List<Passenger> passengers, Payment payment ,List<FlightDetails> flightDetails) {
-        System.out.println("------------payment----------------"+payment);
-        FlightBooking flBooking = new FlightBooking();
-        // Save the customer and payment entities
         
-       // payment.persist();
-
-        //passengerRepository.persist(passengers);
-        //fDetailsRepository.persist(flightDetails);
-
+        FlightBooking flBooking = new FlightBooking();
+        
+        // Associate the passenger , flightdetails and payment entities with the flight booking entity
         flBooking.setPassenger(passengers);
         flBooking.setFlightDetails(flightDetails);
-        System.out.println("--------pay-"+payment);
         flBooking.setPayment(payment);
-        System.out.println("--------------"+flBooking);
-        
         // Save the flight booking entity
-        //flightBooking.persist();
         flBooking.persist();
     }
-
     @Override
     @Transactional
-    public void deleteBooking(Long bookingId) {
+    public FlightBooking bookFlight(FlightBooking flightBooking) {
+       
+        flightBooking.persist();
+        return flightBooking;
+       
+    }
+    @Override
+    @Transactional
+    public Long deleteBooking(Long bookingId) {
+
         // Find the FlightBooking entity
         FlightBooking flightBooking = FlightBooking.findById(bookingId);
-        System.out.println("------------------"+flightBooking);
+       
         if (flightBooking != null) {
-            // Delete the associated Payment entity
+            // Delete the associated Payment entities
             Payment payment = flightBooking.getPayment();
             if (payment != null) {
                 payment.delete();
             }
             
-            // Delete the associated Customer entity
+            // Delete the associated Passenger entities
             List<Passenger> passengers = flightBooking.getPassenger();
             if (passengers != null) {
                 passengers.stream().forEach(passenger -> {
                     passengerRepository.delete(passenger);
                 });
             }
-
+            // Delete the associated Flight Details entities
             List<FlightDetails> flDetails = flightBooking.getFlightDetails();
             if (flDetails != null) {
                 flDetails.stream().forEach(flightdetail -> {
@@ -115,5 +115,35 @@ public class FlightBookingSeviceImplementation implements FlightBookingService{
             // Delete the FlightBooking entity
             flightBooking.delete();
         }
+        return bookingId;
+    }
+    // Checking the expiry for flight cancelling
+    // @Override
+    // public Boolean canDelete(FlightBooking flightBooking){
+    //     if (flightBooking.getFlightDetails().get(0).getDepartureDate().)
+    // }
+
+
+    //Cancelling only return or only one flight
+    
+    @Override
+    @Transactional
+    public String cancelReturn(Long bookingId , String flightId){
+       // Find the FlightBooking entity
+       FlightBooking flightBooking = FlightBooking.findById(bookingId);
+       //Delete only particular flight and update the booking
+       List<FlightDetails> flDetails = flightBooking.getFlightDetails();
+       if (flDetails != null) {
+          Optional<FlightDetails> flightdetail = flDetails.stream()
+                                        .filter(detail -> detail.getFlightId().equals(flightId))
+                                        .findFirst();
+
+           if(flightdetail.isPresent()){
+             System.out.println("Flight details:-------- " + flightdetail.get());
+               FlightDetails.deleteById(flightdetail.get().getId());
+           }                             
+       }
+      return flightId;
+
     }
 }

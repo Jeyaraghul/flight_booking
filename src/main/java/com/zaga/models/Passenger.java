@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -18,9 +20,12 @@ public class Passenger extends PanacheEntityBase {
     private Long id;
 
     @Column()
+    @NotBlank(message = "Name cannot be blank")
     private String name;
 
     @Column()
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Email must be a valid email address")
     private String email;
 
     public Long getId() {

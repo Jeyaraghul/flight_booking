@@ -1,6 +1,6 @@
 package com.zaga.models;
 
-import java.math.BigDecimal;
+//import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,8 +21,8 @@ public class Payment extends PanacheEntityBase{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column()
-    private Float amount = 500.00f;
+    @Column(nullable = false)
+    private Float amount ;
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;

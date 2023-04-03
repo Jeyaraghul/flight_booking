@@ -10,5 +10,7 @@ import com.zaga.models.Payment;
 public interface FlightBookingService {
     public void bookFlight(FlightBooking flightBooking, Passenger passenger, Payment payment ,FlightDetails flightDetails);
     public void bookFlight(FlightBooking flightBooking,List<Passenger> passengers, Payment payment ,List<FlightDetails> flightDetails);
-    public void deleteBooking(Long bookingId);
+    public Long deleteBooking(Long bookingId);
+    public FlightBooking bookFlight(FlightBooking flightBooking);
+    public String cancelReturn(Long bookingId , String flightId);
 }

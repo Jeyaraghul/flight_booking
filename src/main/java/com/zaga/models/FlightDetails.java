@@ -1,6 +1,7 @@
 package com.zaga.models;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,17 +22,22 @@ public class FlightDetails extends PanacheEntityBase{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column()
+    private String flightId;
+
+    @Column(nullable = false)
     private String origin;
 
-    @Column()
+    @Column(nullable = false)
     private String destination;
 
-    @Column()
+    @Column(nullable = false)
     private LocalDate departureDate;
 
-    @Column()
+    @Column(nullable = false)
     private LocalDate returnDate;
+
+    @Column(nullable = false)
+    private LocalDateTime departureTime;
 
     public Long getId() {
         return id;
@@ -39,6 +45,22 @@ public class FlightDetails extends PanacheEntityBase{
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getFlightId() {
+        return flightId;
+    }
+
+    public void setFlightId(String flightId) {
+        this.flightId = flightId;
+    }
+
+    public LocalDateTime getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(LocalDateTime departureTime) {
+        this.departureTime = departureTime;
     }
 
     public String getOrigin() {
@@ -73,13 +95,28 @@ public class FlightDetails extends PanacheEntityBase{
         this.returnDate = returnDate;
     }
 
-    @Override
-    public String toString() {
-        return "FlightDetails [id=" + id + ", origin=" + origin + ", destination=" + destination + ", departureDate="
-                + departureDate + ", returnDate=" + returnDate + "]";
+    public FlightDetails(String flightId, String origin, String destination, LocalDate departureDate,
+            LocalDate returnDate, LocalDateTime departureTime) {
+        this.flightId = flightId;
+        this.origin = origin;
+        this.destination = destination;
+        this.departureDate = departureDate;
+        this.returnDate = returnDate;
+        this.departureTime = departureTime;
     }
     
-    // @ManyToOne
-    // @JoinColumn(name = "flight_id")
-    // private Flight flight; 
+
+    public FlightDetails() {
+    }
+
+    @Override
+    public String toString() {
+        return "FlightDetails [id=" + id + ", flightId=" + flightId + ", origin=" + origin + ", destination="
+                + destination + ", departureDate=" + departureDate + ", returnDate=" + returnDate + ", departureTime="
+                + departureTime + "]";
+    }
+
+   
+    
+    
 }

@@ -10,10 +10,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
+//import javax.persistence.JoinColumns;
 //import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -28,6 +29,7 @@ public class FlightBooking extends PanacheEntityBase{
     private Long id;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @Valid
     private List<Passenger> passenger;
 
     @OneToOne( cascade = CascadeType.ALL)
